@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	
+	<bean id="paging" class="com.inc.util.Paging"/>
+	<bean id="boardService" class="com.inc.service.BoardServiceImpl" p:boardDao-ref="boardDao" p:paging-ref="paging"/>
+	<bean id="replyService" class="com.inc.service.ReplyServiceImpl" p:replyDao-ref="replyDao"/>
+	
+	<bean id="boardDao" class="com.inc.dao.BoardDao" p:session-ref="sqlSession"/>
+	<bean id="replyDao" class="com.inc.dao.ReplyDao" p:session-ref="sqlSession"/>
+	
+	<context:property-placeholder location="classpath:mybatis/config/db.properties"/>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="sqlSessionFactory" 
+	      class="org.mybatis.spring.SqlSessionFactoryBean" 
+ 		  p:configLocation="classpath:mybatis/config/mybatis-context.xml"
+ 		  p:dataSource-ref="dataSource-pool"/>
+    
+    <bean id="dataSource-pool" 
+		  class="org.apache.commons.dbcp.BasicDataSource"
+		  p:driverClassName="${driver-class}" p:url="${url}"
+		  p:username="${user-name}" p:password="${password}" p:maxActive="${max-active}"/>
+	
+	<bean id="dataSource-simple" 
+		  class="org.springframework.jdbc.datasource.SimpleDriverDataSource"
+		  p:driverClass="${driver-class}" p:url="${url}"
+		  p:username="${user-name}" p:password="${password}"/>	  
+
+</beans>
